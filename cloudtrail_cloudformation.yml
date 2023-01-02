@@ -5,14 +5,10 @@ Resources:
         KeyPolicy:
           Id: cloudtrailsKey
           Statement:
-            - Sid: Enable IAM User Permissions
+            - Sid: IAM User Permissions
               Effect: Allow
               Principal:
-                AWS: !Join
-                  - ''
-                  - - 'arn:aws:iam::'
-                    - !Ref 'AWS::AccountId'
-                    - ':root'
+                AWS: !Ref MyKeyPrincipal
               Action: 'kms:*'
               Resource: '*'
             - Sid: Allow CloudTrail to encrypt the logs
@@ -85,11 +81,7 @@ Resources:
             - Sid: Enable IAM User Permissions
               Effect: Allow
               Principal:
-                AWS: !Join
-                  - ''
-                  - - 'arn:aws:iam::'
-                    - !Ref 'AWS::AccountId'
-                    - ':root'
+                AWS: !Ref MyKeyPrincipal
               Action: 'kms:*'
               Resource: '*'
             - Sid: Allow VPC Flow Logs to use the key
@@ -156,6 +148,10 @@ Resources:
         IsLogging: true
         KMSKeyId: !GetAtt cloudtrailsKey.Arn
 
+  MyKeyPrincipal:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: MyKeyPrincipal
 Outputs:
     CloudTrailKMSKeyAlias:
         Description: 'CloudTrail KMS Key Alias'
